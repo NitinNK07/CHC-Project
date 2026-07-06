@@ -12,6 +12,8 @@ import Feedback from './pages/Feedback';
 import VerifyPrescription from './pages/VerifyPrescription';
 import UploadReport from './pages/UploadReport';
 import HealthcareTest from './pages/HealthcareTest';
+import PatientImaging from './pages/PatientImaging';
+import Chatbot from './components/ui/Chatbot';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -40,6 +42,7 @@ function AppRoutes() {
       <Route path="/verify-prescription" element={<ProtectedRoute><VerifyPrescription /></ProtectedRoute>} />
       <Route path="/upload-report" element={<ProtectedRoute><UploadReport /></ProtectedRoute>} />
       <Route path="/health-test" element={<ProtectedRoute><HealthcareTest /></ProtectedRoute>} />
+      <Route path="/patient-imaging" element={<ProtectedRoute><PatientImaging /></ProtectedRoute>} />
 
       {/* Default redirect */}
       <Route path="*" element={<Navigate to="/login" replace />} />
@@ -54,6 +57,7 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
           <AppRoutes />
+          <Chatbot />
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
