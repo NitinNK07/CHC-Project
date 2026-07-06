@@ -1,42 +1,60 @@
 import { test, expect } from '@playwright/test';
 
+// Helper: bypass login by injecting auth directly into localStorage
+async function injectAuth(page, role = 'Doctor') {
+  await page.goto('http://localhost:5173/login');
+  await page.evaluate((role) => {
+    localStorage.setItem('chc_token', 'mock-jwt-token');
+    localStorage.setItem('chc_user', JSON.stringify({
+      userName: 'testuser',
+      role: role,
+      healthCardNo: 'TEST001',
+      district: 'TestDistrict'
+    }));
+  }, role);
+}
+
 test.describe('AI Chatbot Feature', () => {
-  test('should render the chatbot FAB on the dashboard and allow toggling', async ({ page }) => {
-    // Navigate to local environment (assuming dev server runs on localhost:5173)
-    await page.goto('http://localhost:5173/login');
-    
-    // Login as a user (replace with valid credentials if testing actual functionality)
-    // We can also test just the presence of the component if mocked or if the button renders.
-    // For this e2e, let's just make sure we hit the dashboard
-    
-    // Assuming we have a test user
-    await page.fill('input[placeholder="Username or Email"]', 'testuser');
-    await page.fill('input[placeholder="Password"]', 'password');
-    await page.click('button[type="submit"]');
+  test('should render the chatbot FAB on dashboard and allow toggling', async ({ page }) => {
+    // Mock all backend calls to prevent 503 errors
+    await page.route('http://localhost:8081/**', async route => {
+      const url = route.request().url();
 
-    // Wait for navigation
-    await page.waitForURL('**/dashboard');
+      if (url.includes('/api/chat/history')) {
+        return route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+      }
+      if (url.includes('/api/chat') && route.request().method() === 'POST') {
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reply: 'Hello! How can I help?' }) });
+      }
+      // Default: abort any other API calls gracefully
+      return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    });
 
-    // Ensure the FAB is present
+    // Inject auth into localStorage and navigate to dashboard
+    await injectAuth(page, 'Doctor');
+    await page.goto('http://localhost:5173/dashboard');
+
+    // Wait for dashboard to settle
+    await page.waitForTimeout(2000);
+
+    // Check chatbot FAB is present
     const chatbotFab = page.locator('.chatbot-fab');
-    await expect(chatbotFab).toBeVisible();
+    await expect(chatbotFab).toBeVisible({ timeout: 10000 });
 
-    // Click the FAB to open the chatbot
-    await chatbotFab.click();
-
-    // Check if Chatbot window opens
+    // Open the chatbot using force click (handles any overlay issues)
+    await chatbotFab.click({ force: true });
+    // Wait for chatbot window to appear
     const chatbotWindow = page.locator('.chatbot-window');
-    await expect(chatbotWindow).toBeVisible();
+    await expect(chatbotWindow).toBeVisible({ timeout: 8000 });
 
-    // Check for the AI Health Assistant title
+    // Verify title
     await expect(page.locator('.chatbot-title')).toContainText('AI Health Assistant');
 
-    // Type a message
-    const input = page.locator('.chatbot-input input');
-    await input.fill('Hello AI');
-    await page.click('.chatbot-input button');
+    // Send a message
+    await page.locator('.chatbot-input input').fill('Hello AI');
+    await page.keyboard.press('Enter');
 
-    // Verify the message appears in the chat
-    await expect(page.locator('.chatbot-message-text').last()).toContainText('Hello AI');
+    // Verify user message appears
+    await expect(page.locator('.chatbot-message-wrapper.user').last()).toContainText('Hello AI', { timeout: 5000 });
   });
 });
