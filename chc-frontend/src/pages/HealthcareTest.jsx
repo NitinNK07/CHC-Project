@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import API from '../api/axios';
 import Sidebar from '../components/layout/Sidebar';
 import Navbar from '../components/layout/Navbar';
 
@@ -48,19 +49,32 @@ export default function HealthcareTest() {
   const [results, setResults] = useState(null);
 
   useEffect(() => {
-    if (user?.userName) {
-      const savedState = localStorage.getItem(`chc_health_test_${user.userName}`);
-      if (savedState) {
-        const parsed = JSON.parse(savedState);
-        if (parsed.completed) {
-          setCompleted(true);
-          setResults(parsed.results);
-        } else {
-          setAnswers(parsed.answers || {});
-          setCurrentIndex(parsed.currentIndex || 0);
+    const fetchResults = async () => {
+      if (user?.userName) {
+        try {
+          // Check backend for completed test
+          const res = await API.get(`/health-test/${user.userName}`);
+          if (res.data) {
+            setCompleted(true);
+            setResults(res.data);
+            return;
+          }
+        } catch (err) {
+          console.log('No previous test found in DB or error fetching');
+        }
+        
+        // If no DB result, check for local progress
+        const savedState = localStorage.getItem(`chc_health_test_${user.userName}`);
+        if (savedState) {
+          const parsed = JSON.parse(savedState);
+          if (!parsed.completed) {
+            setAnswers(parsed.answers || {});
+            setCurrentIndex(parsed.currentIndex || 0);
+          }
         }
       }
-    }
+    };
+    fetchResults();
   }, [user]);
 
   const saveProgress = (newAnswers, newIndex) => {
@@ -88,7 +102,7 @@ export default function HealthcareTest() {
     }
   };
 
-  const finishTest = (finalAnswers) => {
+  const finishTest = async (finalAnswers) => {
     // Calculate BMI
     const h = parseFloat(finalAnswers['height']) / 100;
     const w = parseFloat(finalAnswers['weight']);
@@ -119,22 +133,29 @@ export default function HealthcareTest() {
     else overallStatus = 'Very Bad';
 
     const testResults = {
-      bmi,
+      userName: user.userName,
+      bmi: bmi.toString(),
       bmiStatus,
       score,
       overallStatus,
-      bloodPressure: { sys: 120, dia: 80, status: 'Normal' }, // mock based on standard
-      heartRate: { value: 72, status: 'Resting' },
-      spO2: { value: 98, status: 'Optimal' },
+      bloodPressureSys: 120,
+      bloodPressureDia: 80,
+      bloodPressureStatus: 'Normal',
+      heartRateValue: 72,
+      heartRateStatus: 'Resting',
+      spO2Value: 98,
+      spO2Status: 'Optimal',
       completedAt: new Date().toISOString()
     };
 
-    setResults(testResults);
-    setCompleted(true);
-    localStorage.setItem(`chc_health_test_${user.userName}`, JSON.stringify({
-      completed: true,
-      results: testResults
-    }));
+    try {
+      await API.post('/health-test/save', testResults);
+      setResults(testResults);
+      setCompleted(true);
+      localStorage.removeItem(`chc_health_test_${user.userName}`); // clear local draft
+    } catch (err) {
+      console.error('Failed to save test results', err);
+    }
   };
 
   const reapplyTest = () => {

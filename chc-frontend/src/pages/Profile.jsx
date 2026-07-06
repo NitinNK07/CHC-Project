@@ -56,11 +56,13 @@ export default function Profile() {
     }
 
     if ((roleName === 'User' || roleName === 'Patient') && user?.userName) {
-      const saved = localStorage.getItem(`chc_health_test_${user.userName}`);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.completed) setHealthResults(parsed.results);
-      }
+      import('../api/axios').then(module => {
+        module.default.get(`/health-test/${user.userName}`)
+          .then(res => {
+            if (res.data) setHealthResults(res.data);
+          })
+          .catch(err => console.log('No health test data found'));
+      });
     }
   }, [roleName, user?.userName]);
 
