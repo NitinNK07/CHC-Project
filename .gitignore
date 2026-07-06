@@ -1,0 +1,22 @@
+# Ignore user specified folder
+myFrendFolder/
+
+# Frontend (Node)
+node_modules/
+dist/
+build/
+.env
+
+# Backend (Java/Spring Boot)
+target/
+*.class
+*.jar
+*.war
+.mvn/
+
+# IDE and OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
