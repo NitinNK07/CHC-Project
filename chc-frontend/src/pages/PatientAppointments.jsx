@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import API from '../api/axios';
 import Sidebar from '../components/layout/Sidebar';
 import Navbar from '../components/layout/Navbar';
+import { toast } from '../components/ui/Toast';
 
 export default function PatientAppointments() {
   const { user } = useAuth();
@@ -59,18 +60,21 @@ export default function PatientAppointments() {
 
   const handleBook = async (e) => {
     e.preventDefault();
-    if (!selectedDoctor || !appointmentDate || !appointmentTime) return;
+    if (!selectedDoctor || !appointmentDate || !appointmentTime) {
+      toast.error('Please select a doctor, date and time.');
+      return;
+    }
 
     setBookingLoading(true);
     try {
       await API.post('/chc/appointments/book', {
         patientHealthCardNo: user.healthCardNo,
-        doctorRegiNo: selectedDoctor.doctorRegiNo,
+        doctorRegiNo: Number(selectedDoctor.doctorRegiNo),
         appointmentDate,
         appointmentTime,
         reason
       });
-      alert('Appointment requested successfully!');
+      toast.success('Appointment requested successfully! The doctor will review it shortly.');
       // Reset form
       setSearchQuery('');
       setSelectedDoctor(null);
@@ -79,7 +83,8 @@ export default function PatientAppointments() {
       setReason('');
       fetchAppointments();
     } catch (err) {
-      alert('Failed to book appointment.');
+      const msg = err.response?.data?.message || err.response?.data || 'Failed to book appointment.';
+      toast.error(typeof msg === 'string' ? msg : 'Failed to book appointment. Please try again.');
     } finally {
       setBookingLoading(false);
     }

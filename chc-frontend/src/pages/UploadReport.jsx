@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
 import Sidebar from '../components/layout/Sidebar';
 import Navbar from '../components/layout/Navbar';
+import { toast } from '../components/ui/Toast';
 
 export default function UploadReport() {
   const { user } = useAuth();
@@ -41,32 +42,28 @@ export default function UploadReport() {
     setSuccess('');
 
     try {
-      // Step 1: Create a lab test request
-      const testRes = await API.post('/lab/requestTest', {
-        doctorUserName: 'self-upload',
-        patientHealthCardId: form.patientHealthCardId,
-        testName: form.testName,
-        notes: form.remarks || '',
-      });
-
-      // Step 2: We need the test request ID. For simplicity, we'll fetch the latest pending one.
-      // For now, upload directly with a simplified flow:
       const formData = new FormData();
-      formData.append('labTestRequestId', '0'); // Will be handled by backend
+      formData.append('patientHealthCardId', form.patientHealthCardId);
+      formData.append('testName', form.testName);
       formData.append('pathologistUserName', user?.userName || 'pathologist');
       formData.append('findings', form.findings);
       formData.append('remarks', form.remarks || '');
       formData.append('file', file);
 
-      await API.post('/lab/uploadReport', formData, {
+      await API.post('/lab/uploadStandaloneReport', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       setSuccess(t('uploadReport.success'));
-      // Removed form reset to keep fields visible until manually cleared
+      toast.success('Lab report uploaded successfully!');
       setFile(null);
+      const fileInput = document.getElementById('reportFile');
+      if (fileInput) fileInput.value = '';
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data || t('uploadReport.error'));
+      const msg = err.response?.data?.message || err.response?.data || t('uploadReport.error');
+      const errMsg = typeof msg === 'string' ? msg : 'Upload failed. Please try again.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }

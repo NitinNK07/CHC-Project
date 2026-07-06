@@ -16,6 +16,7 @@ import PatientImaging from './pages/PatientImaging';
 import PatientAppointments from './pages/PatientAppointments';
 import DoctorAppointments from './pages/DoctorAppointments';
 import Chatbot from './components/ui/Chatbot';
+import { ToastContainer } from './components/ui/Toast';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -62,6 +63,7 @@ export default function App() {
         <AuthProvider>
           <AppRoutes />
           <Chatbot />
+          <ToastContainer />
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>

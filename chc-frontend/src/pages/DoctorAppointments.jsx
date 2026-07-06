@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import API from '../api/axios';
 import Sidebar from '../components/layout/Sidebar';
 import Navbar from '../components/layout/Navbar';
+import { toast } from '../components/ui/Toast';
 
 export default function DoctorAppointments() {
   const { user } = useAuth();
@@ -47,8 +48,9 @@ export default function DoctorAppointments() {
       });
       fetchAppointments();
       setShowModal(false);
+      toast.success(`Appointment ${status === 'ACCEPTED' ? 'accepted' : status === 'RESCHEDULED' ? 'rescheduled' : 'updated'} successfully.`);
     } catch (err) {
-      alert('Failed to update status');
+      toast.error('Failed to update appointment status.');
     }
   };
 

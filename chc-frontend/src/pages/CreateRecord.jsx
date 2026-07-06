@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import API from '../api/axios';
 import Sidebar from '../components/layout/Sidebar';
 import Navbar from '../components/layout/Navbar';
+import { toast } from '../components/ui/Toast';
 
 export default function CreateRecord() {
   const { user } = useAuth();
@@ -89,9 +90,12 @@ export default function CreateRecord() {
       });
 
       setSuccess(t('createRecord.success'));
+      toast.success('Medical record created successfully!');
       // Form reset removed so inputs don't vanish until manually cleared
     } catch (err) {
-      setError(err.response?.data?.msg || t('createRecord.failed'));
+      const errMsg = err.response?.data?.msg || t('createRecord.failed');
+      setError(errMsg);
+      toast.error(errMsg);
     } finally { setLoading(false); }
   };
 

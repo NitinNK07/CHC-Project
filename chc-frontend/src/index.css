@@ -133,7 +133,25 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   min-height: 100vh;
+  cursor: default;
 }
+
+/* Prevent text-select cursor on non-editable content */
+p, span, h1, h2, h3, h4, h5, h6, label, div, li, td, th {
+  cursor: default;
+}
+
+/* Inputs and textareas should show text cursor */
+input, textarea {
+  cursor: text;
+}
+
+/* Interactive elements show pointer */
+a, button, [role="button"], [tabindex]:not([tabindex="-1"]),
+select, .btn, .clickable {
+  cursor: pointer;
+}
+
 
 #root {
   min-height: 100vh;
@@ -142,6 +160,7 @@ body {
 a {
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
 ul, ol {
@@ -165,6 +184,7 @@ input, textarea, select {
   outline: none;
   border: none;
 }
+
 
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar {

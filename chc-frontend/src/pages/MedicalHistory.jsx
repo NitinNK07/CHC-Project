@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import API from '../api/axios';
-
+import Sidebar from '../components/layout/Sidebar';
+import Navbar from '../components/layout/Navbar';
 export default function MedicalHistory() {
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -317,7 +318,11 @@ export default function MedicalHistory() {
   const roleColor = { Doctor: '#8b5cf6', Chemist: '#f59e0b', User: '#00e6d9', Patient: '#00e6d9', Admin: '#f43f5e' }[roleName] || '#00e6d9';
 
   return (
-    <>
+    <div className="dashboard-layout">
+      <Sidebar />
+      <div className="dashboard-main">
+        <Navbar />
+        <div className="dashboard-content">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="page-header">
               <h1>{roleName === 'Doctor' ? `🔍 ${t('medicalHistory.patientRecords')}` : roleName === 'Chemist' ? `📋 ${t('medicalHistory.patientRecords')}` : `📋 ${t('medicalHistory.title')}`}</h1>
@@ -1064,6 +1069,8 @@ export default function MedicalHistory() {
               </motion.div>
             )}
           </AnimatePresence>
-    </>
+        </div>
+      </div>
+    </div>
   );
 }
