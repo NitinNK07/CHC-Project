@@ -62,9 +62,9 @@ export default function DoctorAppointments() {
   return (
     <div className="dashboard-layout">
       <Sidebar />
-      <div className="dashboard-content">
-        <Navbar title="Appointment Requests" />
-        
+      <div className="dashboard-main">
+        <Navbar />
+        <div className="dashboard-content">
         <div className="page-header">
           <div>
             <h1>Manage Appointments</h1>
@@ -120,6 +120,7 @@ export default function DoctorAppointments() {
             )}
           </motion.div>
         </div>
+      </div>
       </div>
 
       {showModal && (

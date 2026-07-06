@@ -25,6 +25,7 @@ export default function Dashboard() {
         { icon: '💬', label: 'Feedback', value: 'Send', color: '#f59e0b' },
       ],
       actions: [
+        { icon: '📅', label: t('nav.appointments'), desc: 'View and manage incoming appointment requests', link: '/doctor-appointments' },
         { icon: '💊', label: t('nav.createRecord'), desc: 'Create a medical record for a patient', link: '/create-record' },
         { icon: '🔍', label: t('nav.medicalHistory'), desc: 'Search and view any patient history', link: '/medical-history' },
         { icon: '💬', label: t('nav.feedback'), desc: 'Report issues or suggest improvements', link: '/feedback' },
@@ -92,6 +93,7 @@ export default function Dashboard() {
         { icon: '💬', label: 'Feedback', value: 'Send', color: '#f59e0b' },
       ],
       actions: [
+        { icon: '📅', label: t('nav.appointments'), desc: 'Book a doctor appointment online', link: '/patient-appointments' },
         { icon: '📋', label: t('nav.medicalHistory'), desc: 'Access your complete health records', link: '/medical-history' },
         { icon: '👤', label: 'Complete Profile (Health Test)', desc: 'Attempt basic healthcare test to update profile status', link: '/health-test' },
         { icon: '💬', label: t('nav.feedback'), desc: 'Share your experience with CHC', link: '/feedback' },

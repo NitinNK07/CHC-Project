@@ -88,8 +88,9 @@ export default function PatientAppointments() {
   return (
     <div className="dashboard-layout">
       <Sidebar />
-      <div className="dashboard-content">
-        <Navbar title="My Appointments" />
+      <div className="dashboard-main">
+        <Navbar />
+        <div className="dashboard-content">
         
         <div className="page-header">
           <div>
@@ -197,6 +198,7 @@ export default function PatientAppointments() {
           </motion.div>
 
         </div>
+      </div>
       </div>
     </div>
   );

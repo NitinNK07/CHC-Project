@@ -20,6 +20,8 @@ export default function Navbar() {
     '/feedback': `💬 ${t('nav.feedback')}`,
     '/profile': `👤 ${t('nav.profile')}`,
     '/upload-report': `🔬 ${t('nav.uploadReport')}`,
+    '/patient-appointments': `📅 ${t('nav.appointments')}`,
+    '/doctor-appointments': `📅 ${t('nav.appointments')}`,
   };
 
   const title = pageTitles[location.pathname] || 'CHC';
