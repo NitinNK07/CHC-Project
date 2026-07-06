@@ -141,7 +141,10 @@ export default function CreateRecord() {
                                 borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}
                               onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-tertiary)'}
                               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                              <span style={{ fontWeight: 600 }}>{s.firstName} {s.lastName} <span style={{ color: 'var(--text-tertiary)' }}>@{s.userName}</span></span>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <span style={{ fontWeight: 600 }}>{s.firstName} {s.lastName} <span style={{ color: 'var(--text-tertiary)' }}>@{s.userName}</span></span>
+                                {s.email && <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>✉️ {s.email}</span>}
+                              </div>
                               <span style={{ fontFamily: 'monospace', color: '#8b5cf6', fontWeight: 600 }}>{s.healthCardNo}</span>
                             </div>
                           ))}

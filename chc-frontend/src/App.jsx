@@ -13,6 +13,8 @@ import VerifyPrescription from './pages/VerifyPrescription';
 import UploadReport from './pages/UploadReport';
 import HealthcareTest from './pages/HealthcareTest';
 import PatientImaging from './pages/PatientImaging';
+import PatientAppointments from './pages/PatientAppointments';
+import DoctorAppointments from './pages/DoctorAppointments';
 import Chatbot from './components/ui/Chatbot';
 
 function ProtectedRoute({ children }) {
@@ -43,6 +45,8 @@ function AppRoutes() {
       <Route path="/upload-report" element={<ProtectedRoute><UploadReport /></ProtectedRoute>} />
       <Route path="/health-test" element={<ProtectedRoute><HealthcareTest /></ProtectedRoute>} />
       <Route path="/patient-imaging" element={<ProtectedRoute><PatientImaging /></ProtectedRoute>} />
+      <Route path="/patient-appointments" element={<ProtectedRoute><PatientAppointments /></ProtectedRoute>} />
+      <Route path="/doctor-appointments" element={<ProtectedRoute><DoctorAppointments /></ProtectedRoute>} />
 
       {/* Default redirect */}
       <Route path="*" element={<Navigate to="/login" replace />} />

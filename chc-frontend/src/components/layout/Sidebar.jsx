@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 const patientNav = [
   { path: '/dashboard', labelKey: 'nav.dashboard', icon: '📊' },
+  { path: '/patient-appointments', labelKey: 'nav.appointments', icon: '📅' },
   { path: '/medical-history', labelKey: 'nav.medicalHistory', icon: '📋' },
   { path: '/feedback', labelKey: 'nav.feedback', icon: '💬' },
   { path: '/profile', labelKey: 'nav.profile', icon: '👤' },
@@ -11,6 +12,7 @@ const patientNav = [
 
 const doctorNav = [
   { path: '/dashboard', labelKey: 'nav.dashboard', icon: '📊' },
+  { path: '/doctor-appointments', labelKey: 'nav.appointments', icon: '📅' },
   { path: '/create-record', labelKey: 'nav.createRecord', icon: '💊' },
   { path: '/medical-history', labelKey: 'nav.medicalHistory', icon: '🔍' },
   { path: '/feedback', labelKey: 'nav.feedback', icon: '💬' },
